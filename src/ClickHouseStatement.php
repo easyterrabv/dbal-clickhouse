@@ -8,7 +8,7 @@ declare(strict_types=1);
  *
  * (c) FriendsOfDoctrine <https://github.com/FriendsOfDoctrine/>.
  *
- * For the full copyright and license inflormation, please view the LICENSE
+ * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
@@ -241,27 +241,31 @@ class ClickHouseStatement implements \IteratorAggregate, Statement
     /**
      * {@inheritDoc}
      */
-    public function bindValue($param, $value, $type = null)
+    public function bindValue($param, $value, $type = null): bool
     {
         $this->values[$param] = $value;
         $this->types[$param]  = $type;
+
+        return true;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function bindParam($column, &$variable, $type = null, $length = null)
+    public function bindParam($column, &$variable, $type = null, $length = null): bool
     {
         $this->values[$column] = &$variable;
         $this->types[$column]  = $type;
+
+        return true;
     }
 
-    public function errorCode() : void
+    public function errorCode() : int
     {
         throw new ClickHouseException('You need to implement ClickHouseStatement::' . __METHOD__ . '()');
     }
 
-    public function errorInfo() : void
+    public function errorInfo() : array
     {
         throw new ClickHouseException('You need to implement ClickHouseStatement::' . __METHOD__ . '()');
     }

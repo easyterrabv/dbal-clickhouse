@@ -8,13 +8,12 @@ declare(strict_types=1);
  *
  * (c) FriendsOfDoctrine <https://github.com/FriendsOfDoctrine/>.
  *
- * For the full copyright and license inflormation, please view the LICENSE
+ * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
 namespace FOD\DBALClickHouse;
 
-use Doctrine\DBAL\DBALException;
 use function strtoupper;
 use function substr;
 use function trim;
@@ -39,19 +38,19 @@ class Connection extends \Doctrine\DBAL\Connection
     }
 
     /**
-     * @throws DBALException
+     * @throws ClickHouseException
      */
-    public function delete($tableExpression, array $identifier, array $types = []) : void
+    public function delete($tableExpression, array $identifier, array $types = []) : int
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw ClickHouseException::notSupported(__METHOD__);
     }
 
     /**
-     * @throws DBALException
+     * @throws ClickHouseException
      */
-    public function update($tableExpression, array $data, array $identifier, array $types = []) : void
+    public function update($tableExpression, array $data, array $identifier, array $types = []) : int
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw ClickHouseException::notSupported(__METHOD__);
     }
 
     /**
@@ -59,114 +58,114 @@ class Connection extends \Doctrine\DBAL\Connection
      */
 
     /**
-     * @throws DBALException
+     * @throws ClickHouseException
      */
-    public function setTransactionIsolation($level) : void
+    public function setTransactionIsolation($level) : int
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw ClickHouseException::notSupported(__METHOD__);
     }
 
     /**
-     * @throws DBALException
+     * @throws ClickHouseException
      */
-    public function getTransactionIsolation() : void
+    public function getTransactionIsolation() : int
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw ClickHouseException::notSupported(__METHOD__);
     }
 
     /**
-     * @throws DBALException
+     * @throws ClickHouseException
      */
-    public function getTransactionNestingLevel() : void
+    public function getTransactionNestingLevel() : int
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw ClickHouseException::notSupported(__METHOD__);
     }
 
     /**
-     * @throws DBALException
+     * @throws ClickHouseException
      */
     public function transactional(\Closure $func) : void
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw ClickHouseException::notSupported(__METHOD__);
     }
 
     /**
-     * @throws DBALException
+     * @throws ClickHouseException
      */
     public function setNestTransactionsWithSavepoints($nestTransactionsWithSavepoints) : void
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw ClickHouseException::notSupported(__METHOD__);
     }
 
     /**
-     * @throws DBALException
+     * @throws ClickHouseException
      */
-    public function getNestTransactionsWithSavepoints() : void
+    public function getNestTransactionsWithSavepoints() : bool
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw ClickHouseException::notSupported(__METHOD__);
     }
 
     /**
-     * @throws DBALException
+     * @throws ClickHouseException
      */
-    public function beginTransaction() : void
+    public function beginTransaction() : bool
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw ClickHouseException::notSupported(__METHOD__);
     }
 
     /**
-     * @throws DBALException
+     * @throws ClickHouseException
      */
-    public function commit() : void
+    public function commit() : bool
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw ClickHouseException::notSupported(__METHOD__);
     }
 
     /**
-     * @throws DBALException
+     * @throws ClickHouseException
      */
-    public function rollBack() : void
+    public function rollBack() : bool
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw ClickHouseException::notSupported(__METHOD__);
     }
 
     /**
-     * @throws DBALException
+     * @throws ClickHouseException
      */
     public function createSavepoint($savepoint) : void
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw ClickHouseException::notSupported(__METHOD__);
     }
 
     /**
-     * @throws DBALException
+     * @throws ClickHouseException
      */
     public function releaseSavepoint($savepoint) : void
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw ClickHouseException::notSupported(__METHOD__);
     }
 
     /**
-     * @throws DBALException
+     * @throws ClickHouseException
      */
     public function rollbackSavepoint($savepoint) : void
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw ClickHouseException::notSupported(__METHOD__);
     }
 
     /**
-     * @throws DBALException
+     * @throws ClickHouseException
      */
     public function setRollbackOnly() : void
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw ClickHouseException::notSupported(__METHOD__);
     }
 
     /**
-     * @throws DBALException
+     * @throws ClickHouseException
      */
-    public function isRollbackOnly() : void
+    public function isRollbackOnly() : bool
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw ClickHouseException::notSupported(__METHOD__);
     }
 }
