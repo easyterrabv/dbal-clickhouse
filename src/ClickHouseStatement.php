@@ -330,10 +330,12 @@ class ClickHouseStatement implements \IteratorAggregate, Statement
     protected function processViaSMI2(string $sql) : void
     {
         $sql = trim($sql);
+
+        // preg replace might return null for very large SQL strings (for example massive bulk inserts)
         $withoutCte = preg_replace('/WITH(.*)SELECT/ms', 'SELECT', $sql);
 
         $this->rows =
-            stripos($withoutCte, 'select') === 0 ||
+            ($withoutCte !== null && stripos($withoutCte, 'select') === 0) ||
             stripos($sql, 'show') === 0 ||
             stripos($sql, 'describe') === 0 ?
                 $this->smi2CHClient->select($sql)->rows() :
