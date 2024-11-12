@@ -119,9 +119,12 @@ class ClickHouseStatement implements Statement
         }
 
         try {
+            // preg replace might return null for very large SQL strings (for example massive bulk inserts)
+            $withoutCte = preg_replace('/WITH(.*)SELECT/ms', 'SELECT', $statement);
+
             return new ClickHouseResult(
                 new \ArrayIterator(
-                    mb_stripos($statement, 'select') === 0 ||
+                    ($withoutCte !== null && mb_stripos($withoutCte, 'select') === 0) ||
                     mb_stripos($statement, 'show') === 0 ||
                     mb_stripos($statement, 'describe') === 0
                         ? $this->client->select($statement)->rows()
