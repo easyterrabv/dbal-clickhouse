@@ -251,8 +251,7 @@ class SelectTest extends TestCase
 
     public function testWith(): void
     {
-        $result = $this->connection->executeQuery("
-            WITH subselect as (
+        $result = $this->connection->executeQuery("WITH subselect as (
                 SELECT id
                 FROM test_select_table
                 WHERE payload = 'v4'
