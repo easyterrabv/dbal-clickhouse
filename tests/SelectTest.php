@@ -254,13 +254,13 @@ class SelectTest extends TestCase
         $result = $this->connection->executeQuery("WITH subselect as (
                 SELECT id
                 FROM test_select_table
-                WHERE payload = 'v1'
+                WHERE payload = 'v4'
             )
             SELECT *
             FROM test_select_table tbl
             JOIN subselect sub ON sub.id = tbl.id
         ");
 
-        $this->assertEquals(2, $result->columnCount());
+        $this->assertEquals(4, $result->columnCount());
     }
 }
