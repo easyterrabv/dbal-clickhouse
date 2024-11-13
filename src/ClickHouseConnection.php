@@ -14,160 +14,124 @@ declare(strict_types=1);
 
 namespace FOD\DBALClickHouse;
 
-use ClickHouseDB\Client as Smi2CHClient;
-use ClickHouseDB\Exception\TransportException;
+use ClickHouseDB\Client;
+use ClickHouseDB\Exception\ClickHouseException;
 use Doctrine\DBAL\Driver\Connection;
-use Doctrine\DBAL\Driver\PingableConnection;
-use Doctrine\DBAL\Driver\ServerInfoAwareConnection;
-use Doctrine\DBAL\ParameterType;
+use Doctrine\DBAL\Driver\Result;
+use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+
+use Doctrine\DBAL\Platforms\Exception\NotSupported;
 use function array_merge;
-use function func_get_args;
 
-/**
- * ClickHouse implementation for the Connection interface.
- */
-class ClickHouseConnection implements Connection, PingableConnection, ServerInfoAwareConnection
+class ClickHouseConnection implements Connection
 {
-    /** @var Smi2CHClient */
-    protected $smi2CHClient;
+    protected Client $client;
 
-    /** @var AbstractPlatform */
-    protected $platform;
+    protected AbstractPlatform $platform;
 
     public function __construct(
         array $params,
-        string $username,
+        string $user,
         string $password,
         AbstractPlatform $platform
     ) {
-        $this->smi2CHClient = new Smi2CHClient([
-            'host' => $params['host'] ?? 'localhost',
-            'port' => $params['port'] ?? 8123,
-            'username' => $username,
+        $connectParams = [
+            'host'     => $params['host'] ?? 'localhost',
+            'port'     => $params['port'] ?? 8123,
+            'username' => $user,
             'password' => $password,
-        ], array_merge([
-            'database' => $params['dbname'] ?? 'default',
-        ], $params['driverOptions'] ?? []));
+        ];
+
+        if (isset($params['driverOptions']['sslCA'])) {
+            $connectParams['sslCA'] = $params['driverOptions']['sslCA'];
+            unset($params['driverOptions']['sslCA']);
+        }
+
+        $clientParams = array_merge(['database' => $params['dbname'] ?? 'default'], $params['driverOptions'] ?? []);
+
+        $this->client = new Client($connectParams, $clientParams);
         $this->platform = $platform;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function prepare($prepareString) : ClickHouseStatement
+    public function prepare(string $sql): Statement
     {
-        return new ClickHouseStatement($this->smi2CHClient, $prepareString, $this->platform);
+        return new ClickHouseStatement($this->client, $sql, $this->platform);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function query() : ClickHouseStatement
+    public function query(string $sql): Result
     {
-        $args = func_get_args();
-        $stmt = $this->prepare($args[0]);
-        $stmt->execute();
-
-        return $stmt;
+        return $this->prepare($sql)->execute();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function quote($input, $type = ParameterType::STRING)
+    public function quote(string $value): string
     {
-        if ($type === ParameterType::INTEGER) {
-            return $input;
-        }
-
-        return $this->platform->quoteStringLiteral($input);
+        return $this->platform->quoteStringLiteral($value);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function exec($statement) : int
+    public function exec(string $sql): int
     {
-        $stmt = $this->prepare($statement);
-        $stmt->execute();
-
-        return $stmt->rowCount();
+        return $this->prepare($sql)->execute()->rowCount();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function lastInsertId($name = null)
+    public function lastInsertId(): int|string
     {
-        throw ClickHouseException::notSupported('Unable to get last insert id in ClickHouse');
+        throw NotSupported::new(__METHOD__);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function beginTransaction() : bool
+    public function beginTransaction(): void
     {
-        throw ClickHouseException::notSupported('Transactions are not allowed in ClickHouse');
+        throw NotSupported::new(__METHOD__);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function commit() : bool
+    public function commit(): void
     {
-        throw ClickHouseException::notSupported('Transactions are not allowed in ClickHouse');
+        throw NotSupported::new(__METHOD__);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function rollBack() : bool
+    public function rollBack(): void
     {
-        throw ClickHouseException::notSupported('Transactions are not allowed in ClickHouse');
+        throw NotSupported::new(__METHOD__);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function errorCode() : ?string
-    {
-        throw ClickHouseException::notSupported('You need to implement ClickHouseConnection::errorCode()');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function errorInfo() : array
-    {
-        throw ClickHouseException::notSupported('You need to implement ClickHouseConnection::errorInfo()');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function ping() : bool
-    {
-        return $this->smi2CHClient->ping();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getServerVersion() : string
+    public function getServerVersion(): string
     {
         try {
-            return $this->smi2CHClient->getServerVersion();
-        } catch (TransportException $e) {
+            return $this->client->getServerVersion();
+        } catch (ClickHouseException) {
             return '';
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function requiresQueryForServerVersion() : bool
+    public function getNativeConnection()
     {
-        return true;
+        return $this;
     }
 }

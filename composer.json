@@ -8,7 +8,7 @@
         "clickhouse",
         "driver"
     ],
-    "homepage": "http://github.com/friendsofdoctrine/dbal-clickhouse",
+    "homepage": "https://github.com/friendsofdoctrine/dbal-clickhouse",
     "license": "MIT",
     "authors": [
         {
@@ -20,20 +20,20 @@
             "email": "mitrofanovnk@yandex.ru"
         },
         {
-            "name": "Sanikovich Aleksey",
+            "name": "Sanikovich Aliaksei",
             "email": "asanikovich@gmail.com"
         }
     ],
     "require": {
-        "php": "^7.1 || ^8.0",
-        "ext-pdo": "*",
+        "php": "^8.1",
         "ext-pcre": "*",
-        "doctrine/dbal": "^2.7",
+        "ext-mbstring": "*",
+        "doctrine/dbal": "^4.0",
         "smi2/phpclickhouse": "^1.0"
     },
     "require-dev": {
         "doctrine/coding-standard": "^4.0 || ^9.0",
-        "phpunit/phpunit": "^7.0 || ^9.0"
+        "phpunit/phpunit": "^9.5 || ^10.0 || ^11.0"
     },
     "autoload": {
         "psr-4": {
