@@ -1079,7 +1079,7 @@ class ClickHousePlatform extends AbstractPlatform
      */
     public function quoteStringLiteral(string $str): string
     {
-        return parent::quoteStringLiteral(addslashes($str));
+        return "'" . addslashes($str) . "'";
     }
 
     /**
