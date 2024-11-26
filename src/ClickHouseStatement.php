@@ -119,6 +119,8 @@ class ClickHouseStatement implements Statement
         }
 
         try {
+            $statement = trim($statement);
+
             // preg replace might return null for very large SQL strings (for example massive bulk inserts)
             $withoutCte = preg_replace('/WITH(.*)SELECT/ms', 'SELECT', $statement);
 
